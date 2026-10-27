@@ -1,0 +1,17 @@
+{
+  "name": "Обществоведение · 11 класс",
+  "short_name": "Обществоведение",
+  "description": "Конспекты, презентации-уроки и тесты по учебнику «Обществоведение. 11 класс»",
+  "lang": "ru",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#171310",
+  "theme_color": "#a08357",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

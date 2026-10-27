@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- ============================================================
+       ОБЩЕСТВОВЕДЕНИЕ · 11 класс — образовательный сайт-конспект
+       Liquid Glass UI · чистый HTML/CSS/JS · PWA (оффлайн)
+       Данные: data.js (единственный источник контента).
+       Состояние: localStorage (неймспейс obsh11:*).
+       ============================================================ -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Обществоведение · 11 класс — конспекты и тесты</title>
+  <meta name="description" content="Конспекты, презентации-уроки и тесты по учебнику «Обществоведение. 11 класс»: прогресс, экзамен, флеш-карточки, глоссарий, Pomodoro.">
+  <meta name="theme-color" content="#171310">
+
+  <!-- SEO / Open Graph (статический сайт) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Обществоведение · 11 класс — конспекты и тесты">
+  <meta property="og:description" content="21 параграф: краткие и подробные конспекты, уроки-презентации, тесты, экзамен, флеш-карточки и статистика.">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary">
+
+  <!-- PWA: манифест + иконки (SVG data-URI, без внешних файлов) -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23a08357'/%3E%3Ctext x='32' y='42' font-size='28' font-family='sans-serif' font-weight='700' text-anchor='middle' fill='%23fff'%3E%D0%9E%D0%B1%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+  <!-- Тема применяется ДО отрисовки (без «вспышки»).
+       ДЕФОЛТ — ТЁМНАЯ «камень и бронза». Светлая «пергамент» — кнопкой 🌙.
+       ВАЖНО: сохранённый выбор (light/auto/dark) работает как обычно
+       (ключ obsh11:theme-v2). Слот dark = «Светлая» (слоновая кость),
+       слот light = «Тёмная модерн» (графит/латунь). -->
+  <script>
+    (function () {
+      var KEY = 'obsh11:theme-v2';
+      try {
+        var saved = localStorage.getItem(KEY);
+        var mode = saved ? saved.replace(/"/g, '') : 'dark';   // дефолт: светлая (кость)
+        if (mode !== 'dark' && mode !== 'light' && mode !== 'auto') mode = 'dark';
+        var dark = mode === 'dark' ||
+                   (mode === 'auto' && (function () {
+                     var h = new Date().getHours();
+                     return h >= 21 || h < 7;                     // ночь 21:00–07:00
+                   })());
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.themeMode = mode;
+      } catch (e) {
+        document.documentElement.dataset.theme = 'dark';
+        document.documentElement.dataset.themeMode = 'dark';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== ФОНОВАЯ СЦЕНА (liquid glass): блобы + мраморные прожилки (тёплые
+       для тёмной темы / серые для светлой) + шум + виньетка ===== -->
+  <div class="bg-stage" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+    <!-- два слоя прожилок: цвет переключается темой через opacity -->
+    <div class="bg-veins veins-light"></div>   <!-- серый мрамор (светлая тема) -->
+    <div class="bg-veins veins-dark"></div>    <!-- тёплый камень (тёмная тема) -->
+    <div class="bg-noise"></div>   <!-- зернистость мрамора/камня -->
+    <div class="bg-vignette"></div>
+  </div>
+
+  <!-- Кнопка выхода из режима чтения (видна только в body.reading) -->
+  <button type="button" id="reading-exit" aria-label="Выйти из режима чтения">✕ Выйти из чтения</button>
+
+  <!-- ===== ШАПКА: бренд · прогресс · ПОИСК · действия (на виду) ===== -->
+  <header class="site-header glass">
+    <div class="header-inner">
+      <button type="button" class="icon-btn glass" id="menu-toggle" aria-label="Оглавление" aria-expanded="false" title="Оглавление">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+
+      <!-- ПОИСК (мобильный): кнопка-лупа СЛЕВА, рядом с оглавлением.
+           Клик: она перемещается в КРАЙНИЙ ЛЕВЫЙ УГОЛ шапки, круглеет,
+           справа от неё вырастает строка поиска. -->
+      <button type="button" class="icon-btn glass search-open-btn" id="search-open" aria-label="Открыть поиск" title="Поиск" aria-expanded="false" hidden>
+        <svg class="so-lens" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <svg class="so-x" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+
+      <a href="#/" class="brand" aria-label="На главную">
+        <span class="brand-text"><strong>Обществоведение</strong><small id="brand-sub">11 класс · конспекты и уроки</small></span>
+      </a>
+
+      <!-- ПОИСК по конспектам (клавиша /) — компакт на десктопе.
+           На мобильных кнопка-лупа — КРАЙНЯЯ СПРАВА (после всех кнопок);
+           клик: она превращается в круг, а СЛЕВА вырастает строка поиска. -->
+      <div class="search-wrap">
+        <input type="search" id="search-input" class="search-input glass" placeholder="Поиск" aria-label="Поиск по конспектам" autocomplete="off">
+        <div id="search-results" class="search-results glass" hidden></div>
+      </div>
+
+      <!-- Прогресс курса (клик — «продолжить») -->
+      <button type="button" class="header-progress" id="progress-btn" title="Продолжить с места остановки">
+        <span class="progress-ring" id="progress-ring">0%</span>
+        <span class="progress-label" id="progress-label">0 / 0</span>
+      </button>
+
+      <div class="header-actions">
+        <!-- РЕЖИМ ШАПКИ: авто-уезд → закрепить → скрыть (цикл по клику) -->
+        <button type="button" class="icon-btn glass hd-mode-btn" id="pin-header" title="Шапка: авто-скрытие" aria-label="Режим шапки" aria-pressed="false">
+          <svg class="pin-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 3.83A7.93 7.93 0 0 0 12 16a7.93 7.93 0 0 0 4.11-1.41A2 2 0 0 1 15 10.76V7h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>
+          <svg class="eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <!-- ЗАКЛАДКИ (на виду) -->
+        <button type="button" class="icon-btn glass" id="bookmarks-btn" title="Закладки" aria-label="Закладки">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>
+        </button>
+        <!-- ТЕМА (на виду) -->
+        <button type="button" class="icon-btn glass" id="theme-toggle" title="Тема: светлая/тёмная/авто" aria-label="Переключить тему">
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <!-- НАСТРОЙКИ/ИНСТРУМЕНТЫ (второстепенные фичи — здесь) -->
+        <button type="button" class="icon-btn glass" id="tools-btn" title="Инструменты и настройки" aria-label="Инструменты и настройки" aria-haspopup="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Полоса прогресса курса — тонкая линия под шапкой -->
+    <div class="course-bar" id="course-bar" role="progressbar" aria-label="Прогресс курса"><i id="course-bar-fill"></i></div>
+  </header>
+
+  <!-- ===== ОСНОВНАЯ ЗОНА: САЙДБАР + КОНТЕНТ ===== -->
+  <div class="layout">
+
+    <!-- Оглавление (стеклянный сайдбар) -->
+    <aside class="sidebar" id="sidebar">
+      <nav class="toc glass" aria-label="Оглавление учебника">
+        <div class="toc-head">
+          <span>Оглавление</span>
+          <button type="button" class="icon-btn toc-close" id="menu-close" aria-label="Закрыть">✕</button>
+        </div>
+        <div class="toc-tools">
+          <!-- Быстрые разделы сайдбара -->
+          <a href="#/glossary" class="toc-tool">Глоссарий</a>
+          <a href="#/map" class="toc-tool">Карта курса</a>
+          <a href="#/stats" class="toc-tool">Статистика</a>
+        </div>
+        <div id="toc-list"></div>
+        <div class="toc-foot">
+          <button type="button" class="btn btn-ghost btn-block" id="reset-progress">⟲ Сбросить прогресс</button>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <!-- КОНТЕНТ: сюда рендерятся все «страницы» -->
+    <main class="content" id="app" tabindex="-1"></main>
+  </div>
+
+  <!-- ===== ПОДВАЛ ===== -->
+  <footer class="site-footer glass">
+    <p>Конспекты и тесты по учебному пособию «Обществоведение. 11 класс» (О. И. Чуприс и др.; «Адукацыя і выхаванне», 2021)</p>
+    <p class="muted">Liquid glass · HTML + CSS + JS · PWA · <button type="button" class="link-btn" id="hotkeys-open">Хоткеи (?)</button> · <button type="button" class="link-btn" id="install-hint" hidden>Установить приложение</button></p>
+  </footer>
+
+  <!-- ===== МОДАЛЬНЫЕ ОКНА (стекло): инструменты, закладки, хоткеи, онбординг ===== -->
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <div class="modal glass" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2 id="modal-title">Инструменты</h2>
+        <button type="button" class="icon-btn" id="modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ===== POMODORO: ненавязчивый виджет в углу ===== -->
+  <div class="pomodoro glass" id="pomodoro" hidden>
+    <span class="pomo-time" id="pomo-time">25:00</span>
+    <span class="pomo-mode" id="pomo-mode">фокус</span>
+    <div class="pomo-btns">
+      <button type="button" class="pomo-btn" id="pomo-start" title="Старт/пауза">▶</button>
+      <button type="button" class="pomo-btn" id="pomo-reset" title="Сброс">⟲</button>
+      <button type="button" class="pomo-btn" id="pomo-hide" title="Скрыть">✕</button>
+    </div>
+  </div>
+
+  <!-- Toast-уведомления (достижения и пр.) -->
+  <div class="toast glass" id="toast" hidden></div>
+
+  <!-- Порядок важен: сначала данные, затем логика -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
